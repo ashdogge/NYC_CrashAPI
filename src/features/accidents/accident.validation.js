@@ -1,14 +1,28 @@
+// accident.validation.js
+
 export const validateAccidentDate = (req, res, next) => {
   const { date } = req.query;
 
+  if (typeof date !== "string") {
+    return res.status(400).json({
+      error: "Date is required",
+    });
+  }
+
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+    return res.status(400).json({
+      error: "Invalid date format",
+    });
+  }
+
+  const parsedDate = new Date(`${date}T00:00:00Z`);
+
   if (
-    typeof date !== "string" ||
-    !/^\d{4}-\d{2}-\d{2}$/.test(date) ||
-    !Number.isFinite(Date.parse(`${date}T00:00:00Z`)) ||
-    new Date(`${date}T00:00:00Z`).toISOString().slice(0, 10) !== date
+    Number.isNaN(parsedDate.getTime()) ||
+    parsedDate.toISOString().slice(0, 10) !== date
   ) {
     return res.status(400).json({
-      error: "Invalid: YYYY-MM-DD date is required",
+      error: "Invalid calendar date",
     });
   }
 

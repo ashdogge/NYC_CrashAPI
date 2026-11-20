@@ -1,7 +1,8 @@
 import express from "express";
 import "dotenv/config";
 import cors from "cors";
-
+import rateLimit from "express-rate-limit";
+import helmet from "helmet";
 import accidentRoutes from "./features/accidents/accident.routes.js";
 import { errorHandler } from "./middleware/errorHandler.js";
 import { notFound } from "./middleware/notFound.js";
@@ -17,14 +18,18 @@ app.use(express.json());
 app.use("/api/accidents", accidentRoutes);
 app.use(notFound);
 app.use(errorHandler);
-// const PORT = process.env.PORT || 3000;
+app.use(helmet());
 
-// app.get("/", (req, res) => {
-//   return res.status(200).json({ message: "API Online!" });
-// });
+const accidentLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 100,
+  standardHeaders: "draft-8",
+  legacyHeaders: false,
+  message: {
+    error: "Too many requests. Please try again later.",
+  },
+});
 
-// app.listen(PORT, () => {
-//   console.log(`listening on port ${PORT}`);
-// });
+app.use("/api/accidents", accidentLimiter, accidentRoutes);
 
 export default app;
