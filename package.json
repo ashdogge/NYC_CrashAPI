@@ -1,6 +1,7 @@
 {
   "name": "nyc_crash_api",
   "version": "1.0.0",
+  "private": true,
   "description": "Backend component for the NYC crash app",
   "homepage": "https://github.com/ashdogge/NYC_CrashAPI#readme",
   "bugs": {
@@ -13,10 +14,12 @@
   "license": "ISC",
   "author": "Ashley T.",
   "type": "module",
-  "main": "index.js",
+  "main": "src/index.js",
+  "engines": {
+    "node": "26.x"
+  },
   "scripts": {
     "start": "node src/server.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon src/server.js"
   },
   "dependencies": {
@@ -24,8 +27,7 @@
     "dotenv": "^18.0.10",
     "express": "^5.3.0",
     "express-rate-limit": "^8.7.5",
-    "helmet": "^8.3.0",
-    "nodemon": "^3.1.14"
+    "helmet": "^8.3.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.14"
