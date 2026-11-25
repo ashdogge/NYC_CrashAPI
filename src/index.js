@@ -1,7 +1,8 @@
 import express from "express";
 import "dotenv/config";
 import cors from "cors";
-import rateLimit from "express-rate-limit";
+import rateLimit, { ipKeyGenerator } from "express-rate-limit";
+import { isIP } from "node:net";
 import helmet from "helmet";
 
 import accidentRoutes from "./features/accidents/accident.routes.js";
@@ -27,11 +28,23 @@ const accidentLimiter = rateLimit({
   limit: 100,
   standardHeaders: "draft-8",
   legacyHeaders: false,
+
+  keyGenerator: (req) => {
+    if (process.env.VERCEL === "1") {
+      const ip = req.get("x-vercel-forwarded-for")?.trim();
+
+      if (ip && isIP(ip)) {
+        return ipKeyGenerator(ip);
+      }
+    }
+
+    return ipKeyGenerator(req.ip || req.socket.remoteAddress);
+  },
+
   message: {
     error: "Too many requests. Please try again later.",
   },
 });
-
 // Health endpoints
 app.get("/", (req, res) => {
   return res.status(200).json({

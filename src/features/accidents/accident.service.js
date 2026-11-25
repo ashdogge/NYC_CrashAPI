@@ -62,7 +62,7 @@ export const getAccidentsByDate = async (date) => {
     if (data.length < PAGE_SIZE) {
       break;
     }
-    console.log(`Retrieved ${data.length} records at offset ${offset}`);
+
     offset += PAGE_SIZE;
   }
 
